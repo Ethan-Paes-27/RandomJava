@@ -11,25 +11,25 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
         }
 
         USED_INTEGERS.add(1);
-        
+
         int gPowRPlus1 = findGPowRPlus1(n);
 
         int firstNum = getFirstNum(gPowRPlus1, n);
 
-        if (firstNum == 1) {
-            int gPowRMinus1 = gPowRPlus1 - 2;
-            firstNum = getFirstNum(gPowRMinus1, n);
+        while (firstNum == 1) {
+            gPowRPlus1 = findGPowRPlus1(n);
+            firstNum = getFirstNum(gPowRPlus1, n);
         }
-        
+
         int secondNum = n / firstNum;
 
         return (new Point (Math.min(firstNum, secondNum), Math.max(firstNum, secondNum)));
     }
 
-    private static int findGPowRPlus1(int n) {
+    public static int findGPowRPlus1(int n) {
         int g = findCoprime(n);
         int r = findR(n, g);
-   
+
         boolean foundR = !(r % 2 == 1);
 
         while (!foundR) {
@@ -47,14 +47,14 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
         else return gPowRPlus1;
     }
 
-    private static boolean isGPowRPlus1Okay(int gPowRPlus1, int n) {
+    public static boolean isGPowRPlus1Okay(int gPowRPlus1, int n) {
         if (gPowRPlus1 % n == 0) {
             return false;
         }
         else return true;
     }
 
-    private static int findCoprime(int n) {
+    public static int findCoprime(int n) {
         int g = 0;
         boolean foundG = false;
 
@@ -71,7 +71,7 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
         }
         return g;
     }
-    private static int randomEvenNumber(int n) {
+    public static int randomEvenNumber(int n) {
         int r = 1;
         while (r % 2 == 1 || r >= n) {
             r = (int)(Math.random() * n) + 1;
@@ -80,7 +80,7 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
         return r;
     }
 
-    private static int findR(int n, int g) {
+    public static int findR(int n, int g) {
         boolean foundR = false;
         int r = 1;
         while (!foundR) {
@@ -94,7 +94,7 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
         return r;
     }
 
-    private static int getFirstNum(int gPowR, int n) {
+    public static int getFirstNum(int gPowR, int n) {
         boolean foundR = false;
 
         int top = Math.max(gPowR, n);
@@ -116,7 +116,7 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
 
         return remainder;
     }
-    private static int getSmaller(int a, int b) {
+    public static int getSmaller(int a, int b) {
         if (a != b) {
             int multiplied = a * b;
             return multiplied / Math.max(a, b);
@@ -124,7 +124,6 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
         else return a;
     }
 
-    
     public static void main(String[] args) {
         System.out.println(factorProductOfPrimes(77));
 //         int n = 77;
@@ -138,7 +137,7 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
 //             g = findCoprime(n); // Restart with a new random g
 //             r = findR(n, g);
 //         }
-        
+
 //         boolean  foundR = !(r % 2 == 1);
 
 //         while (!foundR) {

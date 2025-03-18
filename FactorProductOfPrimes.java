@@ -17,11 +17,13 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
         int firstNum = getFirstNum(gPowRPlus1, n);
 
         if (firstNum == 1) {
-            
+            int gPowRMinus1 = gPowRPlus1 - 2;
+            firstNum = getFirstNum(gPowRMinus1);
         }
+        
         int secondNum = n / firstNum;
 
-        return (new Point (firstNum, secondNum));
+        return (new Point (Math.min(firstNum, secondNum), Math.max(firstNum, secondNum));
     }
 
     private static int findGPowRPlus1(int n) {
@@ -92,11 +94,11 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
         return r;
     }
 
-    private static int getFirstNum(int gPowRPlus1, int n) {
+    private static int getFirstNum(int gPowR, int n) {
         boolean foundR = false;
 
-        int top = Math.max(gPowRPlus1, n);
-        int bottom = getSmaller(gPowRPlus1, n);
+        int top = Math.max(gPowR, n);
+        int bottom = getSmaller(gPowR, n);
         int remainder = top % bottom;
 
         if (remainder == 0) {

@@ -1,11 +1,4 @@
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
-
-import javax.swing.SpringLayout;
-
 import java.awt.Point;
 
 public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0cs

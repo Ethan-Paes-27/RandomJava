@@ -18,6 +18,20 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
         }
 
         USED_INTEGERS.add(1);
+        
+        int gPowRPlus1 = findGPowRPlus1(n);
+
+        int firstNum = getFirstNum(gPowRPlus1, n);
+
+        if (firstNum == 1) {
+            
+        }
+        int secondNum = n / firstNum;
+
+        return (new Point (firstNum, secondNum));
+    }
+
+    private static int findGPowRPlus1(int n) {
         int g = findCoprime(n);
         int r = findR(n, g);
    
@@ -32,14 +46,17 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
 
         int gPowRPlus1 = (int)Math.pow(g, r/2) + 1;
 
-        int firstNum = getFirstNum(gPowRPlus1, n);
-
-        if (firstNum == 1) {
-            
+        if (!isGPowRPlus1Okay(gPowRPlus1, n)) {
+            return findGPowRPlus1(n);
         }
-        int secondNum = n / firstNum;
+        else return gPowRPlus1;
+    }
 
-        return (new Point (firstNum, secondNum));
+    private static boolean isGPowRPlus1Okay(int gPowRPlus1, int n) {
+        if (gPowRPlus1 % n == 0) {
+            return false;
+        }
+        else return true;
     }
 
     private static int findCoprime(int n) {

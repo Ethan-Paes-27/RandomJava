@@ -1,19 +1,22 @@
 import java.util.ArrayList;
-import java.awt.Point;
+import java.math.BigInteger;
 
 public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0cs
 
     private final ArrayList<Integer> USED_INTEGERS = new ArrayList<Integer>(); //Contains all used numbers
+    int countR;
 
     /**
      * 
      * @param n, which is the product of two different prime numbers
      * @return Point, which is the two factors of n in the order smaller number, bigger number
      */
-    public Point factorProductOfPrimes(int n) {
+    public void factorProductOfPrimes(int n) {
+        System.out.println("Calculating...");
+
         // if it is divisible by 2, return 2 and n / 2
         if (n % 2 == 0) {
-            return new Point(2, n / 2);
+            System.out.println(factorPrinter(n, 2, n / 2));
         }
         
         USED_INTEGERS.add(1);
@@ -22,14 +25,25 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
         int firstNum = getFirstNum(gPowRPlus1, n);
         
         //if firstNum is one, keeps finding a new one
-        while (firstNum == 1) {
+        while (Math.abs(firstNum) == 1 || Math.abs(firstNum) == n) {
             gPowRPlus1 = findGPowRPlus1(n);
             firstNum = getFirstNum(gPowRPlus1, n);
         }
 
         int secondNum = n / firstNum;
 
-        return (new Point (Math.min(firstNum, secondNum), Math.max(firstNum, secondNum)));
+        System.out.println(factorPrinter(n, firstNum, secondNum));
+    }
+
+    /**
+     * 
+     * @param n, the product of two different prime numbers
+     * @param firstNum, calculated using findFirstNum
+     * @param secondNum, calculated using n / firstNum
+     * @return A string converter to print the factors of n
+     */
+    private String factorPrinter(int n, int firstNum, int secondNum) {
+        return "The factors of " + n + " are " + Math.min(firstNum, secondNum) + " and " + Math.max(firstNum, secondNum) + ".";
     }
 
     /**
@@ -37,35 +51,25 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
      * @param n, which is the product of two different prime numbers
      * @return GPowRPlus1, which shares a common multiple with n
      */
-    public int findGPowRPlus1(int n) {
+    private int findGPowRPlus1(int n) {
         int g = findCoprime(n);
         int r = findR(n, g);
 
-        boolean foundR = !(r % 2 == 1);
+        boolean foundR = r % 2 == 0 && r != -1;
 
         while (!foundR) { //Checks to make sure that r is valid
             g = findCoprime(n);
             r = findR(n, g);
 
-            foundR = !(r % 2 == 1);
+            foundR = r % 2 == 0 || r == -1;
         }
 
-        int gPowRPlus1 = (int)Math.pow(g, r/2) + 1;
+        BigInteger gPowRPlus1 = BigInteger.valueOf((long)((int)Math.pow(g, r/2) + 1));
 
         if (!isGPowRPlus1Okay(gPowRPlus1, n)) { //Checks to make sure that GPowRPlus1 is okay, otherwise uses recursion
             return findGPowRPlus1(n);
         }
-        else return gPowRPlus1;
-    }
-
-    /**
-     * 
-     * @param gPowRPlus1, gPowRPlus1 from above
-     * @param n, which is the product of two different prime numbers
-     * @return a boolean, which tells if the remainder after modding gPowRPlus1 by n is NOT 0 (false = 0)
-     */
-    public boolean isGPowRPlus1Okay(int gPowRPlus1, int n) {
-        return gPowRPlus1 % n != 0;
+        else return gPowRPlus1.intValue();
     }
 
     /**
@@ -73,7 +77,7 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
      * @param n, which is the product of two different prime numbers
      * @return g, a coprime of n (has no common factors with n)
      */
-    public int findCoprime(int n) {
+    private int findCoprime(int n) {
         int g = 0;
         boolean foundG = false;
 
@@ -85,6 +89,7 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
                 USED_INTEGERS.add(g);
             }
         }
+
         return g;
     }
 
@@ -93,7 +98,7 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
      * @param n, which is the product of two different prime numbers
      * @return e, a random even number that is less than n
      */
-    public int randomEvenNumber(int n) {
+    private int randomEvenNumber(int n) {
         int e = 1;
         while (e % 2 == 1 || e >= n) {
             e = (int)(Math.random() * n) + 1;
@@ -108,18 +113,37 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
      * @param g, which is a coprime of n
      * @return r, which is some power where g^r modded by n is 1
      */
-    public int findR(int n, int g) {
+    private int findR(int n, int g) {
         boolean foundR = false;
         int r = 1;
+        int countR = 0;
+
         while (!foundR) {
-            int remainder = (int)(Math.pow(g, r)) % n;
+            if (countR == 100) {
+                return r = -1;
+            }
+
+            int remainder = (int) (Math.pow(g, r) % n);
+
             if (remainder == 1) {
                 foundR = true;
             }
             else r++;
+            countR++;
         }
 
         return r;
+    }
+
+    /**
+     * 
+     * @param gPowRPlus1, gPowRPlus1 from above
+     * @param n, which is the product of two different prime numbers
+     * @return a boolean, which tells if the remainder after modding gPowRPlus1 by n is NOT 0 (false = 0)
+     */
+    private boolean isGPowRPlus1Okay(BigInteger gPowRPlus1, int n) {
+        BigInteger nBig = BigInteger.valueOf((long)n);
+        return gPowRPlus1.mod(nBig).intValue() != 0;
     }
 
     /**
@@ -128,7 +152,7 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
      * @param n, which is the product of two different prime numbers
      * @return theFirstNum, which uses Euclid's Algorithm to get a common factor of gPowRPlus1 and n (is technically the remainder or bottom)
      */
-    public int getFirstNum(int gPowRPlus1, int n) {
+    private int getFirstNum(int gPowRPlus1, int n) {
         boolean foundR = false;
 
         int top = Math.max(gPowRPlus1, n);
@@ -152,6 +176,6 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
 
     public static void main(String[] args) {
         FactorProductOfPrimes f = new FactorProductOfPrimes();
-        System.out.println(f.factorProductOfPrimes(77));
+        f.factorProductOfPrimes(1277*103);
     }
 }

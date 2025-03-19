@@ -8,7 +8,7 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
 
     /**
      * 
-     * @param n, which is the product of two different prime numbers
+     * @param n, which is the product of two prime numbers
      * @return Point, which is the two factors of n in the order smaller number, bigger number
      */
     public void factorProductOfPrimes(int n) {
@@ -18,6 +18,8 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
         if (n % 2 == 0) {
             System.out.println(factorPrinter(n, 2, n / 2));
         }
+
+        // if it has a perfect square root, return its square roots
         if (Math.sqrt(n) == n / Math.sqrt(n)) {
             System.out.println(factorPrinter(n, (int)Math.sqrt(n), (int)Math.sqrt(n)));
         }
@@ -40,7 +42,7 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
 
     /**
      * 
-     * @param n, the product of two different prime numbers
+     * @param n, the product of two prime numbers
      * @param firstNum, calculated using findFirstNum
      * @param secondNum, calculated using n / firstNum
      * @return A string converter to print the factors of n
@@ -51,7 +53,7 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
 
     /**
      * 
-     * @param n, which is the product of two different prime numbers
+     * @param n, which is the product of two prime numbers
      * @return GPowRPlus1, which shares a common multiple with n
      */
     private int findGPowRPlus1(int n) {
@@ -77,7 +79,7 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
 
     /**
      * 
-     * @param n, which is the product of two different prime numbers
+     * @param n, which is the product of two prime numbers
      * @return g, a coprime of n (has no common factors with n)
      */
     private int findCoprime(int n) {
@@ -98,7 +100,7 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
 
     /**
      * 
-     * @param n, which is the product of two different prime numbers
+     * @param n, which is the product of two prime numbers
      * @return e, a random even number that is less than n
      */
     private int randomEvenNumber(int n) {
@@ -112,7 +114,7 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
 
     /**
      * 
-     * @param n, which is the product of two different prime numbers
+     * @param n, which is the product of two prime numbers
      * @param g, which is a coprime of n
      * @return r, which is some power where g^r modded by n is 1
      */
@@ -141,7 +143,7 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
     /**
      * 
      * @param gPowRPlus1, gPowRPlus1 from above
-     * @param n, which is the product of two different prime numbers
+     * @param n, which is the product of two prime numbers
      * @return a boolean, which tells if the remainder after modding gPowRPlus1 by n is NOT 0 (false = 0)
      */
     private boolean isGPowRPlus1Okay(BigInteger gPowRPlus1, int n) {
@@ -152,7 +154,7 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
     /**
      * 
      * @param gPowRPlus1, which is g^(r/2) + 1 (found above)
-     * @param n, which is the product of two different prime numbers
+     * @param n, which is the product of two prime numbers
      * @return theFirstNum, which uses Euclid's Algorithm to get a common factor of gPowRPlus1 and n (is technically the remainder or bottom)
      */
     private int getFirstNum(int gPowRPlus1, int n) {

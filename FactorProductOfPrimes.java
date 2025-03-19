@@ -18,6 +18,9 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
         if (n % 2 == 0) {
             System.out.println(factorPrinter(n, 2, n / 2));
         }
+        if (Math.sqrt(n) == n / Math.sqrt(n)) {
+            System.out.println(factorPrinter(n, (int)Math.sqrt(n), (int)Math.sqrt(n)));
+        }
         
         USED_INTEGERS.add(1);
 
@@ -176,6 +179,6 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
 
     public static void main(String[] args) {
         FactorProductOfPrimes f = new FactorProductOfPrimes();
-        f.factorProductOfPrimes(1277*103);
+        f.factorProductOfPrimes(121*121);
     }
 }

@@ -20,8 +20,9 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
         }
 
         // if it has a perfect square root, return its square roots
-        if (Math.sqrt(n) == n / Math.sqrt(n)) {
-            System.out.println(factorPrinter(n, (int)Math.sqrt(n), (int)Math.sqrt(n)));
+        double d1 = Math.sqrt(n);
+        if (d1 == Math.floor(d1) && d1 == Math.ceil(d1)) {
+                System.out.println(factorPrinter(n, (int)Math.sqrt(n), (int)Math.sqrt(n)));
         }
         
         USED_INTEGERS.add(1);
@@ -181,6 +182,6 @@ public class FactorProductOfPrimes { //https://www.youtube.com/watch?v=-UrdExQW0
 
     public static void main(String[] args) {
         FactorProductOfPrimes f = new FactorProductOfPrimes();
-        f.factorProductOfPrimes(121*121);
+        f.factorProductOfPrimes(599 * 601);
     }
 }

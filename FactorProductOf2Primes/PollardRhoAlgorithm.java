@@ -81,6 +81,9 @@ public class PollardRhoAlgorithm {
         BigInteger upperLimit = new BigInteger("1000000000000000000000000000");
         upperLimit.sqrt();
         int maxBitLength = 45;
+        int minBitLength = 30;
+
+        int bitLength = (int)(Math.random() * (maxBitLength - minBitLength)) + minBitLength;
 
         // SecureRandom for random prime generation
         SecureRandom random = new SecureRandom();
@@ -91,14 +94,14 @@ public class PollardRhoAlgorithm {
         // Keep trying until the product is less than upperLimit
 
         // Generate two random prime numbers
-        prime1 = BigInteger.probablePrime(maxBitLength, random); // 80 bits of precision
-        prime2 = BigInteger.probablePrime(maxBitLength, random);
+        prime1 = BigInteger.probablePrime(bitLength, random); // 80 bits of precision
+        prime2 = BigInteger.probablePrime(bitLength, random);
 
         while (prime1.compareTo(upperLimit) == 1) {
-            prime1 = BigInteger.probablePrime(maxBitLength, random);
+            prime1 = BigInteger.probablePrime(bitLength, random);
         }
         while (prime2.compareTo(upperLimit) == 1) {
-            prime1 = BigInteger.probablePrime(maxBitLength, random);
+            prime1 = BigInteger.probablePrime(bitLength, random);
         }
 
         // Calculate the product of the two primes

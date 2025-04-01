@@ -72,12 +72,15 @@ public class PollardRhoAlgorithm {
     public static void main(String[] args) {
         PollardRhoAlgorithm p = new PollardRhoAlgorithm();
         BigInteger n = productOfTwoBigPrimes();
+        System.out.println(n);
         System.out.println(p.factor(n));
     }
 
     public static BigInteger productOfTwoBigPrimes() {
-        // Upper bound is 100 sextillion (10^23)
-        BigInteger upperLimit = new BigInteger("316228000000000");
+        // Upper bound is sqrt(10 ^ 27)
+        BigInteger upperLimit = new BigInteger("1000000000000000000000000000");
+        upperLimit.sqrt();
+        int maxBitLength = 45;
 
         // SecureRandom for random prime generation
         SecureRandom random = new SecureRandom();
@@ -88,14 +91,14 @@ public class PollardRhoAlgorithm {
         // Keep trying until the product is less than upperLimit
 
         // Generate two random prime numbers
-        prime1 = BigInteger.probablePrime(40, random); // 80 bits of precision
-        prime2 = BigInteger.probablePrime(40, random);
+        prime1 = BigInteger.probablePrime(maxBitLength, random); // 80 bits of precision
+        prime2 = BigInteger.probablePrime(maxBitLength, random);
 
         while (prime1.compareTo(upperLimit) == 1) {
-            prime1 = BigInteger.probablePrime(40, random);
+            prime1 = BigInteger.probablePrime(maxBitLength, random);
         }
         while (prime2.compareTo(upperLimit) == 1) {
-            prime1 = BigInteger.probablePrime(40, random);
+            prime1 = BigInteger.probablePrime(maxBitLength, random);
         }
 
         // Calculate the product of the two primes

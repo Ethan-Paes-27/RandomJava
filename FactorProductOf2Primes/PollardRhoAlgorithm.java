@@ -1,49 +1,52 @@
 package FactorProductOf2Primes;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.text.DecimalFormat;
 
 public class PollardRhoAlgorithm {
 
-    private long c;
-    private long n;
-    private long x;
-    private long y;
+    private BigInteger c;
+    private BigInteger n;
+    private BigInteger x;
+    private BigInteger y;
 
-
-    public String factor(long n) {
+    public String factor(BigInteger n) {
 
         long startTime = System.nanoTime();
 
         System.out.println("Calculating...");
         this.n = n;
-        c = 1;
-        x = 2;
-        y = 3;
+        c = BigInteger.ONE;
+        x = BigInteger.TWO;
+        y = BigInteger.valueOf(3);
 
-        long d = findD();
-        
+        BigInteger d = findD();
+
         long endTime = System.nanoTime();
         long duration = endTime - startTime;
 
         double durationInSeconds = duration / 1000000000.0;
 
-        DecimalFormat df = new DecimalFormat("0.000000"); //divide by a billion to convert to seconds
+        DecimalFormat df = new DecimalFormat("0.000000"); // divide by a billion to convert to seconds
 
-        return "The factors of " + n + " are " + Math.min(d, n / d) + " and " + Math.max(d, n / d) + ", which took " + df.format(durationInSeconds) + " seconds to calculate.";
+        return "The factors of " + n + " are " + d.min(n.divide(d)) + " and " + d.max(n.divide(d)) + ", which took "
+                + df.format(durationInSeconds) + " seconds to calculate.";
     }
 
-    private long function (long z) {
-        return z * z + c;
+    private BigInteger function(BigInteger z) {
+        return z.multiply(z).add(c);
     }
 
-    private long findD() {
-        long d = gcd(Math.abs(x - y), n);
+    private BigInteger findD() {
 
-        while (d == 1) {
-            x = function(x) % n;
-            y = function(function(y)) % n;
+        BigInteger d = gcd((x.subtract(y).abs()), n);
 
-            d = gcd(Math.abs(x - y), n);
+        while (d.equals(BigInteger.ONE)) {
+            x = function(x).mod(n);
+            y = function(function(y)).mod(n);
+
+            d = gcd((x.subtract(y).abs()), n);
 
             if (d == n) {
                 incrementC();
@@ -53,22 +56,51 @@ public class PollardRhoAlgorithm {
         return d;
     }
 
-    private long gcd(long a, long b) {
-        while (b != 0) {
-        long temp = b;
-            b = a % b;
+    private BigInteger gcd(BigInteger a, BigInteger b) {
+        while (!b.equals(BigInteger.ZERO)) {
+            BigInteger temp = b;
+            b = a.mod(b);
             a = temp;
         }
         return a;
     }
 
     private void incrementC() {
-        c++;
+        c.add(BigInteger.ONE);
     }
 
     public static void main(String[] args) {
         PollardRhoAlgorithm p = new PollardRhoAlgorithm();
-        long n = 213438286801L;
+        BigInteger n = productOfTwoBigPrimes();
         System.out.println(p.factor(n));
+    }
+
+    public static BigInteger productOfTwoBigPrimes() {
+        // Upper bound is 100 sextillion (10^23)
+        BigInteger upperLimit = new BigInteger("316228000000000");
+
+        // SecureRandom for random prime generation
+        SecureRandom random = new SecureRandom();
+
+        // Initialize primes and their product
+        BigInteger prime1, prime2, product;
+
+        // Keep trying until the product is less than upperLimit
+
+        // Generate two random prime numbers
+        prime1 = BigInteger.probablePrime(40, random); // 80 bits of precision
+        prime2 = BigInteger.probablePrime(40, random);
+
+        while (prime1.compareTo(upperLimit) == 1) {
+            prime1 = BigInteger.probablePrime(40, random);
+        }
+        while (prime2.compareTo(upperLimit) == 1) {
+            prime1 = BigInteger.probablePrime(40, random);
+        }
+
+        // Calculate the product of the two primes
+        product = prime1.multiply(prime2);
+
+        return product;
     }
 }

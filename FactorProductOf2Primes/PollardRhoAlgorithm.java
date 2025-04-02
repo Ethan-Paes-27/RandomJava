@@ -110,3 +110,11 @@ public class PollardRhoAlgorithm {
         return product;
     }
 }
+/*
+ * shor's algorithm
+ * general number field sieve
+ * quadratic sieve
+ * pollard rho algorithm
+ * fermats factorization
+ * trivial division
+ */

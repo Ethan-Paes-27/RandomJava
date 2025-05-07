@@ -46,54 +46,22 @@ public class CatConverter {
         return ENGLISH_CAT_MAP.getOrDefault(catMorse, '?');
     }
 
-    // public static String toCat(String str) {
-    //     StringBuilder catString = new StringBuilder();
-
-    //     for (int i = 0; i < str.length(); i++) {
-    //         char c = str.charAt(i);
-    //         if (c == ' ') {
-    //             catString.append(" nya");
-    //             continue;
-    //         }
-    //         if (Character.isDigit(c)) {
-    //             String extra = "";
-    //             if (i != 0 && !Character.isDigit(str.charAt(i - 1))) {
-    //                 extra = " ";
-    //             }
-    //             catString.append(extra + c);
-    //             continue;
-    //         }
-    //         if (!Character.isLetter(c)) {
-    //             catString.append(c);
-    //             continue;
-    //         }
-    //         if (Character.isUpperCase(c)) {
-    //             catString.append(" mew");
-    //         }
-    //         catString.append(" " + toCatMorse(c) + " wi");
-    //     }
-    //     return catString.toString().trim();
-    // }
-
     public static String toCat(String str) {
         StringBuilder catString = new StringBuilder();
-    
+
         for (int i = 0; i < str.length(); i++) {
             char c = str.charAt(i);
-    
-            // Handle spaces (space between words)
+
             if (c == ' ') {
                 catString.append(" nya");
                 continue;
             }
-    
-            // Handle punctuation (just append them directly)
+
             if (!Character.isLetterOrDigit(c)) {
-                catString.append(" ").append(c);  // ensure punctuation is separated
+                catString.append(" ").append(c);
                 continue;
             }
-    
-            // Handle digits (directly append them with possible spacing)
+
             if (Character.isDigit(c)) {
                 String extra = "";
                 if (i != 0 && !Character.isDigit(str.charAt(i - 1))) {
@@ -102,19 +70,16 @@ public class CatConverter {
                 catString.append(extra + c);
                 continue;
             }
-    
-            // Handle uppercase letters (prepend "mew" for uppercase)
+
             if (Character.isUpperCase(c)) {
                 catString.append(" mew");
             }
-    
-            // Append the morse code for the character
+
             catString.append(" " + toCatMorse(c) + " wi");
         }
-    
+
         return catString.toString().trim();
     }
-    
 
     public static void main(String[] args) {
         System.out.println("Welcome to the Cat Converter!");
@@ -149,25 +114,25 @@ public class CatConverter {
         String[] tokens = catStr.trim().split("\\s+");
         boolean capitalizeNext = false;
         List<String> buffer = new ArrayList<>();
-    
+
         for (int i = 0; i < tokens.length; i++) {
             String token = tokens[i];
-    
+
             if (token.equals("nya")) {
                 result.append(" ");
                 continue;
             }
-    
+
             if (token.equals("mew")) {
                 capitalizeNext = true;
                 continue;
             }
-    
+
             if (token.equals("wi")) {
                 if (!buffer.isEmpty()) {
                     String catMorse = String.join(" ", buffer);
                     buffer.clear();
-    
+
                     char letter = toEnglishWord(catMorse);
                     if (capitalizeNext) {
                         result.append(Character.toUpperCase(letter));
@@ -178,7 +143,7 @@ public class CatConverter {
                 }
                 continue;
             }
-    
+
             if (token.length() == 1 && !Character.isLetterOrDigit(token.charAt(0))) {
                 result.append(token);
                 continue;
@@ -188,10 +153,10 @@ public class CatConverter {
                 result.append(token);
                 continue;
             }
-    
+
             buffer.add(token);
         }
-    
+
         if (!buffer.isEmpty()) {
             String catMorse = String.join(" ", buffer);
             char letter = toEnglishWord(catMorse);
@@ -201,8 +166,8 @@ public class CatConverter {
                 result.append(letter);
             }
         }
-    
+
         return result.toString();
     }
-    
+
 }

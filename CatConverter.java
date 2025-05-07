@@ -1,6 +1,12 @@
 import java.util.*;
+import javax.swing.*;
+import java.awt.*;
 
 public class CatConverter {
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(CatConverter::createAndShowGUI);
+    }
 
     private static final Map<Character, String> CAT_MORSE_MAP = new HashMap<>();
     private static final Map<String, Character> ENGLISH_CAT_MAP = new HashMap<>();
@@ -38,14 +44,6 @@ public class CatConverter {
         }
     }
 
-    private static String toCatMorse(char c) {
-        return CAT_MORSE_MAP.getOrDefault(Character.toLowerCase(c), "?");
-    }
-
-    private static char toEnglishWord(String catMorse) {
-        return ENGLISH_CAT_MAP.getOrDefault(catMorse, '?');
-    }
-
     public static String toCat(String str) {
         StringBuilder catString = new StringBuilder();
 
@@ -81,39 +79,15 @@ public class CatConverter {
         return catString.toString().trim();
     }
 
-    public static void main(String[] args) {
-        System.out.println("Welcome to the Cat Converter!");
-        System.out.println("Type 1 for Cat to English, 2 for English to Cat, or 0 to exit.");
-        Scanner scanner = new Scanner(System.in);
-        int choice = scanner.nextInt();
-        while (choice != 0) {
-            if (choice == 1) {
-                System.out.println("Enter the Cat string:");
-                scanner.nextLine(); // consume the newline
-                String catStr = scanner.nextLine();
-                String englishStr = toEnglish(catStr);
-                System.out.println(englishStr);
-                System.out.println();
-            } else if (choice == 2) {
-                System.out.println("Enter the English string:");
-                scanner.nextLine(); // consume the newline
-                String englishStr = scanner.nextLine();
-                String catStr = toCat(englishStr);
-                System.out.println(catStr);
-                System.out.println();
-            } else {
-                System.out.println("Invalid choice. Please try again.");
-            }
-            System.out.println("Type 1 for Cat to English, 2 for English to Cat, or 0 to exit.");
-            choice = scanner.nextInt();
-        }
+    private static String toCatMorse(char c) {
+        return CAT_MORSE_MAP.getOrDefault(Character.toLowerCase(c), "?");
     }
 
     public static String toEnglish(String catStr) {
         StringBuilder result = new StringBuilder();
         String[] tokens = catStr.trim().split("\\s+");
         boolean capitalizeNext = false;
-        List<String> buffer = new ArrayList<>();
+        ArrayList<String> buffer = new ArrayList<>();
 
         for (int i = 0; i < tokens.length; i++) {
             String token = tokens[i];
@@ -170,4 +144,95 @@ public class CatConverter {
         return result.toString();
     }
 
+    private static char toEnglishWord(String catMorse) {
+        return ENGLISH_CAT_MAP.getOrDefault(catMorse, '?');
+    }
+
+    private static void createAndShowGUI() {
+        JFrame frame = new JFrame("ฅ^•ﻌ•^ฅ  Cat Morse Translator  🐾");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 600);
+        frame.setLayout(new BorderLayout(10, 10));
+        frame.getContentPane().setBackground(new Color(255, 245, 250)); // pastel pink bg
+
+        // Font and Color
+        Font font = new Font("Comic Sans MS", Font.PLAIN, 16);
+        Color pastelPink = new Color(255, 230, 250);
+        Color pastelPurple = new Color(240, 220, 255);
+        Color white = Color.WHITE;
+
+        // Title label
+        JLabel title = new JLabel("(=^-ω-^=) Welcome to the Cat Morse Translator! (=^-ω-^=)", JLabel.CENTER);
+        title.setFont(new Font("Comic Sans MS", Font.BOLD, 22));
+        title.setForeground(new Color(180, 100, 200));
+        title.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
+
+        // Text Areas
+        JTextArea inputArea = new JTextArea(7, 40);
+        JTextArea outputArea = new JTextArea(7, 40);
+        inputArea.setFont(font);
+        outputArea.setFont(font);
+        inputArea.setBackground(pastelPink);
+        outputArea.setBackground(pastelPurple);
+        outputArea.setEditable(false);
+        inputArea.setLineWrap(true);
+        outputArea.setLineWrap(true);
+
+        // Scroll panes with borders
+        JScrollPane inputScroll = new JScrollPane(inputArea);
+        JScrollPane outputScroll = new JScrollPane(outputArea);
+        inputScroll.setBorder(BorderFactory.createTitledBorder("🐾 Type English or Cat Morse"));
+        outputScroll.setBorder(BorderFactory.createTitledBorder("🐱 Translation Output"));
+
+        // Buttons
+        JButton toCatBtn = new JButton("Meowify! (English -> Cat)");
+        JButton toEnglishBtn = new JButton("Translate to Hooman :0 (Cat -> English)");
+        JButton clearBtn = new JButton("Clean the Litter Box!");
+
+        toCatBtn.setFont(font);
+        toEnglishBtn.setFont(font);
+        clearBtn.setFont(font);
+        toCatBtn.setBackground(white);
+        toEnglishBtn.setBackground(white);
+        clearBtn.setBackground(white);
+
+        // Button actions
+        toCatBtn.addActionListener(e -> {
+            String input = inputArea.getText().trim();
+            if (!input.isEmpty()) {
+                outputArea.setText(toCat(input));
+            }
+        });
+
+        toEnglishBtn.addActionListener(e -> {
+            String input = inputArea.getText().trim();
+            if (!input.isEmpty()) {
+                outputArea.setText(toEnglish(input));
+            }
+        });
+
+        clearBtn.addActionListener(e -> {
+            inputArea.setText("");
+            outputArea.setText("");
+        });
+
+        // Layout panels
+        JPanel centerPanel = new JPanel(new GridLayout(2, 1, 10, 10));
+        centerPanel.setOpaque(false);
+        centerPanel.add(inputScroll);
+        centerPanel.add(outputScroll);
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setOpaque(false);
+        buttonPanel.add(toCatBtn);
+        buttonPanel.add(toEnglishBtn);
+        buttonPanel.add(clearBtn);
+
+        // Add everything to frame
+        frame.add(title, BorderLayout.NORTH);
+        frame.add(centerPanel, BorderLayout.CENTER);
+        frame.add(buttonPanel, BorderLayout.SOUTH);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
 }

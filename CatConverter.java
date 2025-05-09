@@ -1,6 +1,9 @@
 import java.util.*;
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
+
 import java.awt.*;
+import java.awt.datatransfer.*;
 
 public class CatConverter {
 
@@ -149,90 +152,149 @@ public class CatConverter {
     }
 
     private static void createAndShowGUI() {
-        JFrame frame = new JFrame("ฅ^•ﻌ•^ฅ  Cat Morse Translator  🐾");
+        // --- Frame Setup ---
+        JFrame frame = new JFrame("🐾 Purrfect Cat Morse Translator 🐱");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
-        frame.setLayout(new BorderLayout(10, 10));
-        frame.getContentPane().setBackground(new Color(255, 245, 250)); // pastel pink bg
+        frame.setLocationRelativeTo(null);
 
-        // Font and Color
-        Font font = new Font("Comic Sans MS", Font.PLAIN, 16);
-        Color pastelPink = new Color(255, 230, 250);
-        Color pastelPurple = new Color(240, 220, 255);
-        Color white = Color.WHITE;
+        // --- Fonts ---
+        Font titleFont = new Font("Comic Sans MS", Font.BOLD, 22);
+        Font textFont  = new Font("Comic Sans MS", Font.PLAIN, 16);
 
-        // Title label
-        JLabel title = new JLabel("(=^-ω-^=) Welcome to the Cat Morse Translator! (=^-ω-^=)", JLabel.CENTER);
-        title.setFont(new Font("Comic Sans MS", Font.BOLD, 22));
-        title.setForeground(new Color(180, 100, 200));
-        title.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
+        // --- Themes ---
+        class Theme {
+            Color frameBg, inputBg, outputBg, border, text, btnBg, btnFg;
+            Theme(Color frameBg, Color inputBg, Color outputBg, Color border,
+                  Color text, Color btnBg, Color btnFg) {
+                this.frameBg = frameBg; this.inputBg = inputBg; this.outputBg = outputBg;
+                this.border  = border;  this.text    = text;
+                this.btnBg   = btnBg;   this.btnFg   = btnFg;
+            }
+        }
+        final Theme light = new Theme(
+            new Color(255,245,250), new Color(255,230,250), new Color(240,220,255),
+            new Color(200,150,200), Color.BLACK,      Color.WHITE,      new Color(180,100,200)
+        );
+        final Theme dark  = new Theme(
+            new Color( 40, 30, 50), new Color( 70, 50, 90), new Color( 80, 60,100),
+            new Color(150,100,170), new Color(255,200,255), new Color(255,240,255), new Color(150, 70,170)
+        );
+        final Theme[] current = { light };
 
-        // Text Areas
-        JTextArea inputArea = new JTextArea(7, 40);
+        // --- Components ---
+        JLabel title = new JLabel("(=^-ω-^=) Welcome to the Cat Morse Translator! (=^-ω-^=)", SwingConstants.CENTER);
+        title.setFont(titleFont);
+
+        JTextArea inputArea  = new JTextArea(7, 40);
         JTextArea outputArea = new JTextArea(7, 40);
-        inputArea.setFont(font);
-        outputArea.setFont(font);
-        inputArea.setBackground(pastelPink);
-        outputArea.setBackground(pastelPurple);
-        outputArea.setEditable(false);
-        inputArea.setLineWrap(true);
-        outputArea.setLineWrap(true);
 
-        // Scroll panes with borders
-        JScrollPane inputScroll = new JScrollPane(inputArea);
-        JScrollPane outputScroll = new JScrollPane(outputArea);
-        inputScroll.setBorder(BorderFactory.createTitledBorder("🐾 Type English or Cat Morse"));
-        outputScroll.setBorder(BorderFactory.createTitledBorder("🐱 Translation Output"));
+        JScrollPane inScroll  = new JScrollPane(inputArea);
+        JScrollPane outScroll = new JScrollPane(outputArea);
 
-        // Buttons
-        JButton toCatBtn = new JButton("Meowify! (English -> Cat)");
-        JButton toEnglishBtn = new JButton("Translate to Hooman :0 (Cat -> English)");
-        JButton clearBtn = new JButton("Clean the Litter Box!");
+        JButton btnToCat     = new JButton("Meowify! (English → Cat)");
+        JButton btnToEnglish = new JButton("Translate to Hooman :0 (Cat → English)");
+        JButton btnPaste     = new JButton("📥 Paste");
+        JButton btnCopy      = new JButton("📋 Copy");
+        JButton btnClear     = new JButton("🧼 Clean the Litter Box!");
+        JButton btnToggle    = new JButton("🌙 Toggle Night Light");
 
-        toCatBtn.setFont(font);
-        toEnglishBtn.setFont(font);
-        clearBtn.setFont(font);
-        toCatBtn.setBackground(white);
-        toEnglishBtn.setBackground(white);
-        clearBtn.setBackground(white);
+        // Pack buttons in order
+        JButton[] buttons = { btnToCat, btnToEnglish, btnPaste, btnCopy, btnClear, btnToggle };
 
-        // Button actions
-        toCatBtn.addActionListener(e -> {
-            String input = inputArea.getText().trim();
-            if (!input.isEmpty()) {
-                outputArea.setText(toCat(input));
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        for (JButton b : buttons) buttonPanel.add(b);
+
+        JPanel centerPanel = new JPanel(new GridLayout(2,1,10,10));
+        centerPanel.add(inScroll);
+        centerPanel.add(outScroll);
+
+        // --- Theming Routine ---
+        Runnable applyTheme = () -> {
+            Theme t = current[0];
+            frame.getContentPane().setBackground(t.frameBg);
+
+            // Title color
+            title.setForeground(t.btnFg);
+
+            // Input area
+            inputArea.setBackground(t.inputBg);
+            inputArea.setForeground(t.text);
+            inputArea.setFont(textFont);
+            inScroll.getViewport().setBackground(t.inputBg);
+
+            // Output area
+            outputArea.setBackground(t.outputBg);
+            outputArea.setForeground(t.text);
+            outputArea.setFont(textFont);
+            outputArea.setEditable(false);
+            outScroll.getViewport().setBackground(t.outputBg);
+
+            // Borders
+            inScroll.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(t.border),
+                "🐾 Type English or Cat Morse",
+                TitledBorder.LEFT, TitledBorder.TOP,
+                textFont, t.text));
+            outScroll.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(t.border),
+                "🐱 Translation Output",
+                TitledBorder.LEFT, TitledBorder.TOP,
+                textFont, t.text));
+
+            // Buttons
+            for (JButton b : buttons) {
+                b.setFont(textFont);
+                b.setBackground(t.btnBg);
+                b.setForeground(t.btnFg);
+            }
+            buttonPanel.setBackground(t.frameBg);
+            centerPanel.setBackground(t.frameBg);
+        };
+
+        // --- Actions ---
+        btnToCat.addActionListener(e -> {
+            String in = inputArea.getText();
+            if (!in.isEmpty()) outputArea.setText(toCat(in));
+        });
+        btnToEnglish.addActionListener(e -> {
+            String in = inputArea.getText();
+            if (!in.isEmpty()) outputArea.setText(toEnglish(in));
+        });
+        btnPaste.addActionListener(e -> {
+            try {
+                String clip = (String) Toolkit.getDefaultToolkit()
+                                  .getSystemClipboard()
+                                  .getData(DataFlavor.stringFlavor);
+                inputArea.setText(clip);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(frame, "Couldn't paste from clipboard 🐾");
             }
         });
-
-        toEnglishBtn.addActionListener(e -> {
-            String input = inputArea.getText().trim();
-            if (!input.isEmpty()) {
-                outputArea.setText(toEnglish(input));
+        btnCopy.addActionListener(e -> {
+            String txt = outputArea.getText();
+            if (!txt.isEmpty()) {
+                StringSelection sel = new StringSelection(txt);
+                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(sel, null);
             }
         });
-
-        clearBtn.addActionListener(e -> {
+        btnClear.addActionListener(e -> {
             inputArea.setText("");
             outputArea.setText("");
         });
+        btnToggle.addActionListener(e -> {
+            current[0] = (current[0] == light ? dark : light);
+            btnToggle.setText(current[0] == light ? "🌙 Toggle Night Light" : "☀️ Toggle Daylight");
+            applyTheme.run();
+        });
 
-        // Layout panels
-        JPanel centerPanel = new JPanel(new GridLayout(2, 1, 10, 10));
-        centerPanel.setOpaque(false);
-        centerPanel.add(inputScroll);
-        centerPanel.add(outputScroll);
-
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setOpaque(false);
-        buttonPanel.add(toCatBtn);
-        buttonPanel.add(toEnglishBtn);
-        buttonPanel.add(clearBtn);
-
-        // Add everything to frame
+        // --- Layout & Show ---
         frame.add(title, BorderLayout.NORTH);
         frame.add(centerPanel, BorderLayout.CENTER);
         frame.add(buttonPanel, BorderLayout.SOUTH);
-        frame.setLocationRelativeTo(null);
+
+        applyTheme.run();
         frame.setVisible(true);
     }
 }
